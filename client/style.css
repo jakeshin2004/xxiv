@@ -5,22 +5,23 @@ body {
     margin: 0;
 }
 
-operation {
+.operation {
   margin: 0;
+  position: absolute;
   top: 50%;
-  width: 250px;
-  height: 250px;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-  float: left;
+  width: 150px;
+  height: 150px;
+  font-size: 96px;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 
-card {
+.card {
   margin: 0;
+  position: absolute;
   top: 50%;
-  width: 250px;
-  height: 400px;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-  float: left;
+  width: 150px;
+  height: 200px;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }

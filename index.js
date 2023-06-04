@@ -35,7 +35,7 @@ io.sockets.on("connection", (socket) => {
     socket.emit("redirect-home", "/waiting.html");
   });
 
-  socket.on('ready', (data) => {
+  socket.on("ready", (data) => {
     var roomId;
     if (curRoomId == null){
       roomId = genRoomID(curRooms);
@@ -55,5 +55,9 @@ io.sockets.on("connection", (socket) => {
     curName = data.name;
     curRoomId = data.roomcode;
     socket.emit('redirect-home', "/waiting.html")
+  });
+
+  socket.on("disconnect", (socket) => {
+    console.log("Socket disconnected");
   });
 });
