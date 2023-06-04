@@ -40,10 +40,16 @@
 
             document.getElementById("code").innerHTML = "Code: " + data.code;
         });
+        socket.on('redirect-game', (dir) => {
+            window.location.href = dir;
+        });
     </script>
     <script>
         function start() {
-            
+            codeText = document.getElementById("code").innerHTML;
+            codeText = codeText.split(" ");
+            console.log(codeText[1]);
+            socket.emit('redirect-to-game', codeText[1]);
         }
     </script>
 </body>

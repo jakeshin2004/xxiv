@@ -59,5 +59,17 @@ io.sockets.on("connection", (socket) => {
 
   socket.on("disconnect", (socket) => {
     console.log("Socket disconnected");
+
+  });
+
+  socket.on('redirect-to-game', (roomId) => {
+    io.to(roomId).emit('redirect-game', "/game.html");
+    curRoomId = roomId;
+  });
+
+  socket.on('ready-game', (data) => {
+    socket.join(curRoomId);
+    io.to(curRoomId).emit('start', curRooms[curRoomId]);
   });
 });
+

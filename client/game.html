@@ -17,37 +17,53 @@
                 <button class="operation" style="left:80%">÷</button>
             </div>
             <div style="position:relative; height:50%">
-                <img src="../cards/ace_of_spades2.png" class="card" style="left:20%" draggable="false">
-                <img src="../cards/2_of_clubs.png" class="card" style="left:40%" draggable="false">
-                <img src="../cards/3_of_diamonds.png" class="card" style="left:60%" draggable="false">
-                <img src="../cards/4_of_hearts.png" class="card" style="left:80%" draggable="false">
+                <img src="./cards/ace_of_spades2.png" class="card" style="left:20%" draggable="false">
+                <img src="./cards/2_of_clubs.png" class="card" style="left:40%" draggable="false">
+                <img src="./cards/3_of_diamonds.png" class="card" style="left:60%" draggable="false">
+                <img src="./cards/4_of_hearts.png" class="card" style="left:80%" draggable="false">
             </div>
             <div style="height:20%">
                 <button>CALL</button>
             </div>
         </div>
-        <div style="width:25%; float:left">
-            <div style="height:25vh">
+        <div style="width:25%; float:left" id="playerSection">
+            <div style="height:25vh" class="playerInfo">
                 Player 1<br>
                 Round Score: xxx<br>
                 Cumulative Score: xxx
             </div>
-            <div style="height:25vh">
+            <div style="height:25vh" class="playerInfo">
                 Player 2<br>
                 Round Score: xxx<br>
                 Cumulative Score: xxx
             </div>
-            <div style="height:25vh">
+            <div style="height:25vh" class="playerInfo">
                 Player 3<br>
                 Round Score: xxx<br>
                 Cumulative Score: xxx
             </div>
-            <div style="height:25vh">
+            <div style="height:25vh" class="playerInfo">
                 Player 4<br>
                 Round Score: xxx<br>
                 Cumulative Score: xxx
             </div>
         </div>
     </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        socket.emit('ready-game', 'hello');
+    </script>
+    <script>
+        socket.on('start', (data) => {
+            let playerCards = document.getElementsByClassName('playerInfo');
+
+            for (let i = 0; i < data.players.length; ++i){
+                console.log(playerCards[i].innerHTML);
+                playerCards[i].innerHTML = data.players[i] + "<br>Round Score: xxx<br>Cumulative Score: xxx";
+            }
+        });
+    </script>
 </body>
 </html>
