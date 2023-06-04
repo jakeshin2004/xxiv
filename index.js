@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const app = express();
 const socketIo = require("socket.io");
 
+const { genRoomID } = require("./helper-functions/roomid.js")
+
 var PORT = process.env.PORT || 8080;
 
 const server = http.Server(app).listen(PORT);
@@ -25,3 +27,5 @@ app.get("/", (req, res)=>{
 io.sockets.on('connection', (socket) => {
     console.log('Connection established: ' + socket.id);
 })
+
+var curRooms = []; // list of currently active rooms
