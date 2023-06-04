@@ -8,10 +8,43 @@
 </head>
 <body>
     <h1>Waiting Area!</h1>
+    <h2 id="code"></h2>
+    <ul id="players">
+        <li>Player 1</li>
+        <li>Player 2</li>
+        <li>Player 3</li>
+        <li>Player 4</li>
+    </ul>
+
+    <button onclick="start()">Start game</button>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
+        socket.emit('ready', 'hello');
+    </script>
+    <script>
+        socket.on('post-redirect', (data) => {
+            var list = document.getElementById('players');
+            var players = list.getElementsByTagName('li');
+
+            for (let i = 0; i < players.length; ++i){
+                // console.log("player " + (i + 1))
+                if (players[i].innerHTML == "Player " + (i + 1)){
+                    players[i].innerHTML = data.roomData[data.code].players[i];
+                }
+                if (i == data.roomData[data.code].players.length - 1){
+                    break;
+                }
+            }
+
+            document.getElementById("code").innerHTML = "Code: " + data.code;
+        });
+    </script>
+    <script>
+        function start() {
+            
+        }
     </script>
 </body>
 </html>

@@ -8,7 +8,7 @@ function genRandomID() {
 
 function codeExists(id, curRooms) {
     var idExists = false;
-    for (let room of curRooms) {
+    for (let room in curRooms) {
         if (id === room) {
             idExists = true;
             break;

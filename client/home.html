@@ -12,20 +12,49 @@
     <div style="width:100%">
         <div style="width:50%; float:left">
             <p>Create a New Room</p>
-            <form>
+            <form id="nicknameForm">
                 <label for="nickname">Enter your Nickname:</label><br>
                 <input type="text" id="nickname" name="nickname"><br>
-                <input type="submit" value="CREATE">
             </form>
+            <button onclick="send()">Create</button>
         </div>
         <div style="width:50%; float:left">
             <p>Join an Existing Room</p>
-            <form>
+            <form id="codeForm">
+                <label for="nickname">Enter a Nickname:</label><br>
+                <input type="text" id="nickname" name="nickname"><br>
                 <label for="roomcode">Enter a Room Code:</label><br>
                 <input type="text" id="roomcode" name="roomcode"><br>
-                <input type="submit" value="GO">
             </form>
+            <button onclick="join()">GO</button>
         </div>
     </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+    </script>
+    <script>
+        function send(){
+            var name = document.getElementById("nicknameForm");
+            socket.emit('nickname', name.elements["nickname"].value);
+            name.elements["nickname"].value = "";
+        }
+
+        function join(){
+            var code = document.getElementById("codeForm");
+            data = {
+                'name': code.elements["nickname"].value,
+                'roomcode': code.elements["roomcode"].value
+            }
+            socket.emit('join', data);
+        }
+    </script>
+    <script>
+        socket.on('redirect-home', (dir) => {
+            window.location.href = dir;
+            socket.disconnect();
+        });
+    </script>
+    
 </body>
 </html>
