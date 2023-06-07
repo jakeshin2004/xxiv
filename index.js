@@ -32,6 +32,7 @@ io.sockets.on("connection", (socket) => {
 
   socket.on("nickname", (name) => {
     curName = name;
+    curRoomId = null;
     socket.emit("redirect-home", "/waiting.html");
   });
 
