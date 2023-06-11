@@ -5,6 +5,7 @@ const app = express();
 const socketIo = require("socket.io");
 
 const { genRoomID } = require("./helper-functions/roomid.js");
+const { genCards, parseCards } = require("./helper-functions/cards.js");
 
 var PORT = process.env.PORT || 8080;
 
@@ -70,7 +71,19 @@ io.sockets.on("connection", (socket) => {
 
   socket.on('ready-game', (data) => {
     socket.join(curRoomId);
-    io.to(curRoomId).emit('start', curRooms[curRoomId]);
+    var cards = genCards();
+    curRooms[curRoomId].cardValues = [];
+
+    for (let i = 0; i < 4; ++i){
+      curRooms[curRoomId].cardValues.push(parseCards(cards[i]));
+    }
+
+    data = {
+      "cards": cards,
+      "room": curRooms[curRoomId]
+    }
+
+    io.to(curRoomId).emit('start', data);
   });
 });
 
