@@ -29,3 +29,7 @@ body {
 .playerName {
   margin-bottom: -5%;
 }
+
+#cardSpace {
+  padding: 5%;
+}

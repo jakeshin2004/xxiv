@@ -6,6 +6,7 @@ const socketIo = require("socket.io");
 
 const { genRoomID } = require("./helper-functions/roomid.js");
 const { genCards, parseCards } = require("./helper-functions/cards.js");
+const { setTimeout } = require("timers");
 
 var PORT = process.env.PORT || 8080;
 
@@ -80,10 +81,21 @@ io.sockets.on("connection", (socket) => {
 
     data = {
       "cards": cards,
+      "roomID": curRoomId,
       "room": curRooms[curRoomId]
     }
 
     io.to(curRoomId).emit('start', data);
+  });
+
+  socket.on('freeze', (roomID) => {
+    curRooms[curRoomId].answered = false;
+    socket.broadcast.to(roomID).emit('block-call');
+    socket.emit('enable');
+
+    setTimeout(() => {
+      io.to(roomID).emit('disable');
+    }, 10000);
   });
 });
 
