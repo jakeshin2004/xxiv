@@ -74,9 +74,16 @@ io.sockets.on("connection", (socket) => {
     socket.join(curRoomId);
     var cards = genCards();
     curRooms[curRoomId].cardValues = [];
+    curRooms[curRoomId].playerScores = [];
 
     for (let i = 0; i < 4; ++i){
       curRooms[curRoomId].cardValues.push(parseCards(cards[i]));
+    }
+
+    if (curRooms[curRoomId].playerScores.length == 0) {
+      for (let i = 0; i < curRooms[curRoomId].players.length; ++i){
+        curRooms[curRoomId].playerScores.push(0);
+      }
     }
 
     data = {
@@ -86,6 +93,7 @@ io.sockets.on("connection", (socket) => {
     }
 
     io.to(curRoomId).emit('start', data);
+    console.log(curRooms[curRoomId])
   });
 
   socket.on('freeze', (roomID) => {

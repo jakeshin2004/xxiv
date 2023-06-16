@@ -12,7 +12,7 @@ socket.on("start", (data) => {
 
   for (let i = 0; i < data.room.players.length; ++i) {
     playerCards[i].innerHTML =
-      data.room.players[i] + "<br>Round Score: xxx<br>Cumulative Score: xxx";
+      data.room.players[i] + "<br>Score: 0";
   }
 
   // Randomizes cards in game.html
