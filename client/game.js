@@ -154,6 +154,7 @@ function answer(number) {
     } else {
       if (ans == 24) {
         console.log("WINNER!");
+        socket.emit('winner', {"id": roomID})
       } else {
         console.log('try again');
       }

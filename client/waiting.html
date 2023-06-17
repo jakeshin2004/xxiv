@@ -21,7 +21,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        socket.emit('ready', 'hello');
+        socket.emit('ready');
     </script>
     <script>
         socket.on('post-redirect', (data) => {
