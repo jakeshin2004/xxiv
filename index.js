@@ -38,7 +38,7 @@ io.sockets.on("connection", (socket) => {
     socket.emit("redirect-home", "/waiting.html");
   });
 
-  socket.on("ready", (data) => {
+  socket.on("ready", () => {
     var roomId;
     if (curRoomId == null){
       roomId = genRoomID(curRooms);
@@ -72,12 +72,15 @@ io.sockets.on("connection", (socket) => {
 
   socket.on('ready-game', (data) => {
     socket.join(curRoomId);
-    var cards = genCards();
-    curRooms[curRoomId].cardValues = [];
-    curRooms[curRoomId].playerScores = [];
 
-    for (let i = 0; i < 4; ++i){
-      curRooms[curRoomId].cardValues.push(parseCards(cards[i]));
+    if (!("cardValues" in curRooms[curRoomId])){
+      curRooms[curRoomId].cards = genCards();
+      curRooms[curRoomId].cardValues = [];
+      curRooms[curRoomId].playerScores = [];
+
+      for (let i = 0; i < 4; ++i){
+        curRooms[curRoomId].cardValues.push(parseCards(curRooms[curRoomId].cards[i]));
+      }
     }
 
     if (curRooms[curRoomId].playerScores.length == 0) {
@@ -87,13 +90,12 @@ io.sockets.on("connection", (socket) => {
     }
 
     data = {
-      "cards": cards,
+      "cards": curRooms[curRoomId].cards,
       "roomID": curRoomId,
       "room": curRooms[curRoomId]
     }
 
     io.to(curRoomId).emit('start', data);
-    console.log(curRooms[curRoomId])
   });
 
   socket.on('freeze', (roomID) => {
@@ -104,6 +106,10 @@ io.sockets.on("connection", (socket) => {
     setTimeout(() => {
       io.to(roomID).emit('disable');
     }, 10000);
+  });
+
+  socket.on('winner', (roomID) => {
+
   });
 });
 
