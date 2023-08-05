@@ -50,8 +50,9 @@
         }
     </script>
     <script>
-        socket.on('redirect-home', (dir) => {
-            window.location.href = dir;
+        socket.on('redirect-home', (data) => {
+            window.localStorage.setItem("name", data.name)
+            window.location.href = data.dir;
             socket.disconnect();
         });
     </script>

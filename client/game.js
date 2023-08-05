@@ -5,14 +5,51 @@ var expression = [];
 var cardData = [];
 var cardValues = [];
 var answerData = [];
+var playerName = "";
+var answers = 0;
+var cardsClicked = 0;
+
+function disable(){
+  document.querySelectorAll("button.operation").forEach((elem) => {
+    elem.disabled = true;
+  });
+
+  for (let i = 1; i <= 4; ++i) {
+    let card = document.querySelector("#card" + i);
+    card.setAttribute("onclick", "");
+    card.hidden = false;
+  }
+  answers = 0;
+  cardsClicked = 0;
+  document.querySelector("#callBtn").disabled = false;
+
+  let cardDiv = document.getElementById("cardSpace");
+
+  for (let i = 0; i < 3; ++i) {
+    for (let child of cardDiv.children) {
+      if (child.nodeName === "BUTTON") {
+        cardDiv.removeChild(child);
+      }
+    }
+  }
+
+  answerData = [];
+  expression = [];
+}
 
 socket.on("start", (data) => {
   // Edits player names in game.html
+  
+  cardValues = [];
+  answers = 0;
+  cardsClicked = 0;
   let playerCards = document.getElementsByClassName("playerInfo");
 
+  disable();
+
   for (let i = 0; i < data.room.players.length; ++i) {
-    playerCards[i].innerHTML =
-      data.room.players[i] + "<br>Score: 0";
+    playerCards[i].innerHTML = data.room.players[i] + 
+    "<br>Score: " + data.room.playerScores[data.room.players[i]];
   }
 
   // Randomizes cards in game.html
@@ -24,14 +61,15 @@ socket.on("start", (data) => {
   }
 
   roomID = data.roomID;
+  playerName = window.localStorage.getItem("name");
 
   document.querySelectorAll("button.operation").forEach((elem) => {
     elem.disabled = true;
   });
 
-  for (let i = 1; i <= 4; ++i){
+  for (let i = 1; i <= 4; ++i) {
     let card = document.querySelector("#card" + i);
-    card.setAttribute('onclick', '');
+    card.setAttribute("onclick", "");
     card.hidden = false;
   }
 });
@@ -45,36 +83,16 @@ socket.on("enable", () => {
     elem.disabled = false;
   });
 
-  for (let i = 1; i <= 4; ++i){
-    document.querySelector("#card" + i).setAttribute('onclick', 'answer(' + i + ')')
+  for (let i = 1; i <= 4; ++i) {
+    document
+      .querySelector("#card" + i)
+      .setAttribute("onclick", "answer(" + i + ")");
   }
   document.querySelector("#callBtn").disabled = true;
 });
 
 socket.on("disable", () => {
-  document.querySelectorAll("button.operation").forEach((elem) => {
-    elem.disabled = true;
-  });
-
-  for (let i = 1; i <= 4; ++i){
-    let card = document.querySelector("#card" + i);
-    card.setAttribute('onclick', '');
-    card.hidden = false;
-  }
-  document.querySelector("#callBtn").disabled = false;
-
-  let cardDiv = document.getElementById("cardSpace");
-  
-  for (let i = 0; i < 3; ++i){
-    for (let child of cardDiv.children) {
-      if (child.nodeName === "BUTTON") {
-        cardDiv.removeChild(child);
-      }
-    }
-  }
-
-  answerData = [];
-  expression = [];
+  disable();
 });
 
 function freeze() {
@@ -86,18 +104,42 @@ function answer(number) {
     case 1:
       expression.push(cardValues[0]);
       document.getElementById("card1").hidden = true;
+      cardsClicked++;
       break;
     case 2:
       expression.push(cardValues[1]);
       document.getElementById("card2").hidden = true;
+      cardsClicked++;
       break;
     case 3:
       expression.push(cardValues[2]);
       document.getElementById("card3").hidden = true;
+      cardsClicked++;
       break;
     case 4:
       expression.push(cardValues[3]);
       document.getElementById("card4").hidden = true;
+      cardsClicked++;
+      break;
+    case 5:
+      expression.push(answerData[0]);
+      document.getElementById("btn1").hidden = true;
+      answers--;
+      break;
+    case 6:
+      expression.push(answerData[1]);
+      document.getElementById("btn2").hidden = true;
+      answers--;
+      break;
+    case 7:
+      expression.push(answerData[2]);
+      document.getElementById("btn3").hidden = true;
+      answers--;
+      break;
+    case 8:
+      expression.push(answerData[3]);
+      document.getElementById("btn4").hidden = true;
+      answers--;
       break;
     case "+":
       expression.push("+");
@@ -111,52 +153,56 @@ function answer(number) {
     case "/":
       expression.push("/");
       break;
-    case 5:
-      expression.push(answerData[0]);
-      document.getElementById("btn1").hidden = true;
-      break;
-    case 6:
-      expression.push(answerData[1]);
-      document.getElementById("btn2").hidden = true;
+    case "root":
+      expression.push("√");
       break;
   }
 
-  if (expression.length == 3 && answerData.length <= 2) {
+  if ((expression.length == 3) || (expression[1] == "√" && expression.length == 2)) {
     var ans = 0;
-    console.log(expression);
     if (expression[1] == "+") {
       ans = expression[0] + expression[2];
     } else if (expression[1] == "-") {
       ans = expression[0] - expression[2];
     } else if (expression[1] == "*") {
       ans = expression[0] * expression[2];
+    } else if (expression[1] == "√") {
+      ans = Math.sqrt(expression[0]);
     } else {
       ans = expression[0] / expression[2];
     }
     answerData.push(ans);
-    console.log(answerData.length)
-    if (answerData.length <= 2) {
+    answers++;
+    // console.log(answers);
+    if (answers != 1 || cardsClicked != 4) {
       let cardDiv = document.querySelector("#cardSpace");
       let text = document.createTextNode(ans);
       let button = document.createElement("button");
       if (answerData.length == 1) {
-        button.setAttribute('id', "btn1");
-        button.setAttribute('onclick', "answer(5)");
+        button.setAttribute("id", "btn1");
+        button.setAttribute("onclick", "answer(5)");
+      } else if (answerData.length == 2) {
+        button.setAttribute("id", "btn2");
+        button.setAttribute("onclick", "answer(6)");
+      } else if (answerData.length == 3) {
+        button.setAttribute("id", "btn3");
+        button.setAttribute("onclick", "answer(7)");
       } else {
-        button.setAttribute('id', "btn2");
-        button.setAttribute('onclick', "answer(6)");
+        button.setAttribute("id", "btn4");
+        button.setAttribute("onclick", "answer(8)");
       }
+
+      button.setAttribute("class", "stepButton");
       button.appendChild(text);
 
       cardDiv.appendChild(button);
-      // console.log(cardDiv.children);
-
     } else {
       if (ans == 24) {
         console.log("WINNER!");
-        socket.emit('winner', {"id": roomID})
+        cardValues = [];
+        socket.emit("winner", { "roomID": roomID, "winner": window.localStorage.getItem("name") });
       } else {
-        console.log('try again');
+        console.log("try again");
       }
       answerData = [];
     }

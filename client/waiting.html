@@ -25,6 +25,7 @@
     </script>
     <script>
         socket.on('post-redirect', (data) => {
+            console.log(window.localStorage.getItem("name"))
             var list = document.getElementById('players');
             var players = list.getElementsByTagName('li');
 
