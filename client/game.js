@@ -99,6 +99,10 @@ function freeze() {
   socket.emit("freeze", roomID);
 }
 
+function skip(){
+  socket.emit("skip", roomID);
+}
+
 function answer(number) {
   switch (number) {
     case 1:

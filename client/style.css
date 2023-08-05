@@ -44,7 +44,17 @@ body {
 .callButton {
   width: 70%;
   height: 10%;
-  margin-left: 10%;
+  margin-left: 7%;
   margin-bottom: 10%;
-  /* margin-top: 10%; */
+}
+
+.skipButton {
+  width: 10%;
+  height: 10%;
+  margin-left: 2%;
+  margin-bottom: 10%;
+}
+
+#controlBtns {
+  height: 100%;
 }
