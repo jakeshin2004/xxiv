@@ -9,22 +9,21 @@
 </head>
 <body>
     <div>
-        <div style="width:75%; height:100vh; float:left">
+        <div style="width:75%; height:85vh; float:left">
             <div style="position:relative; height:30%">
-                <button class="operation" style="left:20%" onclick="answer('+')">+</button>
-                <button class="operation" style="left:40%" onclick="answer('-')">-</button>
-                <button class="operation" style="left:60%" onclick="answer('*')">×</button>
-                <button class="operation" style="left:80%" onclick="answer('/')">÷</button>
+                <button class="operation" style="left:16%" onclick="answer('+')">+</button>
+                <button class="operation" style="left:32%" onclick="answer('-')">-</button>
+                <button class="operation" style="left:48%" onclick="answer('*')">×</button>
+                <button class="operation" style="left:64%" onclick="answer('/')">÷</button>
+                <button class="operation" style="left:80%" onclick="answer('root')">√</button>
             </div>
             <div style="position:relative; height:50%" id="cardSpace">
-                <img src="" class="card" id="card1" style="left:20%" draggable="false" onclick="answer(1)">
-                <img src="" class="card" id="card2" style="left:40%" draggable="false" onclick="answer(2)">
-                <img src="" class="card" id="card3" style="left:60%" draggable="false" onclick="answer(3)">
-                <img src="" class="card" id="card4" style="left:80%" draggable="false" onclick="answer(4)">
+                <img src="" class="card" id="card1" style="left:15%" draggable="false" onclick="answer(1)">
+                <img src="" class="card" id="card2" style="left:35%" draggable="false" onclick="answer(2)">
+                <img src="" class="card" id="card3" style="left:55%" draggable="false" onclick="answer(3)">
+                <img src="" class="card" id="card4" style="left:75%" draggable="false" onclick="answer(4)">
             </div>
-            <div style="height:20%">
-                <button id="callBtn" onclick="freeze()">CALL</button>
-            </div>
+            <button id="callBtn" class="callButton" onclick="freeze()">CALL</button>
         </div>
         <div style="width:25%; float:left" id="playerSection">
             <div style="height:25vh" class="playerInfo">

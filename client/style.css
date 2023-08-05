@@ -33,3 +33,18 @@ body {
 #cardSpace {
   padding: 5%;
 }
+
+.stepButton {
+  width: 150px;
+  height: 100px;
+  margin-left: 6%;
+  margin-right: 10%;
+}
+
+.callButton {
+  width: 70%;
+  height: 10%;
+  margin-left: 10%;
+  margin-bottom: 10%;
+  /* margin-top: 10%; */
+}

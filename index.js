@@ -11,7 +11,7 @@ const { setTimeout } = require("timers");
 var PORT = process.env.PORT || 8080;
 
 const server = http.Server(app).listen(PORT);
-const io = socketIo(server);
+var io = socketIo(server);
 
 var urlencodedparser = bodyParser.urlencoded({ extended: false });
 var curRooms = {}; // list of currently active rooms
@@ -35,7 +35,11 @@ io.sockets.on("connection", (socket) => {
   socket.on("nickname", (name) => {
     curName = name;
     curRoomId = null;
-    socket.emit("redirect-home", "/waiting.html");
+    data = {
+      "dir": "/waiting.html",
+      "name": name
+    }
+    socket.emit("redirect-home", data);
   });
 
   socket.on("ready", () => {
@@ -57,7 +61,11 @@ io.sockets.on("connection", (socket) => {
   socket.on('join', (data) => {
     curName = data.name;
     curRoomId = data.roomcode;
-    socket.emit('redirect-home', "/waiting.html")
+    data = {
+      "dir": "/waiting.html",
+      "name": data.name
+    }
+    socket.emit('redirect-home', data)
   });
 
   socket.on("disconnect", (socket) => {
@@ -76,23 +84,23 @@ io.sockets.on("connection", (socket) => {
     if (!("cardValues" in curRooms[curRoomId])){
       curRooms[curRoomId].cards = genCards();
       curRooms[curRoomId].cardValues = [];
-      curRooms[curRoomId].playerScores = [];
+      curRooms[curRoomId].playerScores = {};
 
       for (let i = 0; i < 4; ++i){
         curRooms[curRoomId].cardValues.push(parseCards(curRooms[curRoomId].cards[i]));
       }
     }
 
-    if (curRooms[curRoomId].playerScores.length == 0) {
+    if (Object.keys(curRooms[curRoomId].playerScores).length == 0) {
       for (let i = 0; i < curRooms[curRoomId].players.length; ++i){
-        curRooms[curRoomId].playerScores.push(0);
+        curRooms[curRoomId].playerScores[curRooms[curRoomId].players[i]] = 0;
       }
     }
 
     data = {
       "cards": curRooms[curRoomId].cards,
       "roomID": curRoomId,
-      "room": curRooms[curRoomId]
+      "room": curRooms[curRoomId],
     }
 
     io.to(curRoomId).emit('start', data);
@@ -108,8 +116,19 @@ io.sockets.on("connection", (socket) => {
     }, 10000);
   });
 
-  socket.on('winner', (roomID) => {
-
+  socket.on('winner', (data) => {
+    curRooms[curRoomId].playerScores[data.winner] += 4;
+    curRooms[curRoomId].cards = genCards();
+    curRooms[curRoomId].cardValues = [];
+    for (let i = 0; i < 4; ++i){
+        curRooms[curRoomId].cardValues.push(parseCards(curRooms[curRoomId].cards[i]));
+      }
+    res_data = {
+      "cards": curRooms[curRoomId].cards,
+      "roomID": curRoomId,
+      "room": curRooms[curRoomId],
+    }
+    io.to(data.roomID).emit('start', res_data)
   });
 });
 
