@@ -117,6 +117,7 @@ io.sockets.on("connection", (socket) => {
   });
 
   socket.on('winner', (data) => {
+    curRoomId = data.roomID;
     curRooms[curRoomId].playerScores[data.winner] += 4;
     curRooms[curRoomId].cards = genCards();
     curRooms[curRoomId].cardValues = [];
@@ -129,6 +130,21 @@ io.sockets.on("connection", (socket) => {
       "room": curRooms[curRoomId],
     }
     io.to(data.roomID).emit('start', res_data)
+  });
+
+  socket.on('skip', (roomID) => {
+    curRoomId = roomID;
+    curRooms[curRoomId].cards = genCards();
+    curRooms[curRoomId].cardValues = [];
+    for (let i = 0; i < 4; ++i){
+        curRooms[curRoomId].cardValues.push(parseCards(curRooms[curRoomId].cards[i]));
+      }
+    res_data = {
+      "cards": curRooms[curRoomId].cards,
+      "roomID": curRoomId,
+      "room": curRooms[curRoomId],
+    }
+    io.to(roomID).emit('start', res_data)
   });
 });
 
